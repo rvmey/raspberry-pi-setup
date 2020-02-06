@@ -1,0 +1,6 @@
+[
+    {"trigger":"Reboot","command":"shutdown -r","ground":"background","voice":"reboot"},    
+    {"trigger":"Door 1","command":"\/root\/door1.sh","ground":"background","voice":"door one"},
+    {"trigger":"Door 2","command":"\/root\/door2.sh","ground":"background","voice":"door two"},
+    {"trigger":"apt update","command":"apt-get -y update","ground":"background","voice":"update"} 
+]

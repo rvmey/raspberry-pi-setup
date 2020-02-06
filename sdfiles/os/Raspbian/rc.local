@@ -1,0 +1,45 @@
+#!/bin/bash
+FILE=/root/.TRIGGERcmdData/token.tkn
+if [ -f "$FILE" ]; then
+    echo "triggercmdagent is already installed, moving on."
+else    
+    echo "$FILE does not exist, installing triggercmdagent."    
+    export HOME=/root
+    cd /root    
+    until apt-get -y update
+    do
+        echo Waiting 5 seconds before trying again.
+        sleep 5
+    done    
+    until apt-get -y install npm nodejs
+    do
+        echo Waiting 5 seconds before trying again.
+        sleep 5
+    done
+    wget https://s3.amazonaws.com/triggercmdagents/triggercmdagent_1.0.1_all.deb    
+    until dpkg -i triggercmdagent_1.0.1_all.deb
+    do
+        echo Waiting 5 seconds before trying again.
+        sleep 5
+    done
+    export PI_PASS=$(cat /root/pipass)
+    rm /root/pipass
+    export TCMD_TOKEN=$(cat /root/token.tkn)
+    rm /root/token.tkn
+    echo Creating computer and installing token.
+    echo $TCMD_TOKEN | node /usr/share/triggercmdagent/app/src/agent.js --daemoninstall
+    echo Moving commands.json into /root/.TRIGGERcmdData
+    cp /root/commands.json /root/.TRIGGERcmdData/commands.json
+    rm /root/commands.json
+    echo Installing the triggercmdagent background service.
+    /usr/share/triggercmdagent/app/src/installdaemon.sh
+    echo Installing tcmd command line tool.
+    wget -O /usr/local/bin/tcmd https://triggercmdagents.s3.amazonaws.com/tcmd_cli/tcmd-linux-arm 
+    chmod +x /usr/local/bin/tcmd
+    echo Installing gpio command line tool.
+    apt-get install wiringpi
+    export PI_PASS="${PI_PASS//[[:space:]]/}"
+    echo -e "${PI_PASS}\n${PI_PASS}" | passwd pi
+fi
+
+exit 0

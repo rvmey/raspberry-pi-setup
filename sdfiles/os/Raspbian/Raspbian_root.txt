@@ -1,0 +1,18 @@
+#Noobs config file for raspbian_lite_root_root (DateOfEdit)
+#------------------------------------------------------
+#Format is: filename destination attributes user group
+
+#Copy the Noobs config txt files to home directory for reference
+Raspbian_root.txt /home/pi
+
+rc.local /etc
+commands.json /root
+door1.sh /root
+door2.sh /root
+pipass /root
+
+# Leave this line.  setup.bat creates the os\Raspbian\token.tkn file on the SD card.  
+token.tkn /root
+
+#------------------------------------------------------
+#End
